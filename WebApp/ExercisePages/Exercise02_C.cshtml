@@ -2,9 +2,6 @@
     Layout = "~/_Layout.cshtml";
     Page.Title = string.Format("Razor - {0}", "Exercise02_C");
 
-    //output variable
-    string artistid = "";
-    string artistname = "";
 
     //reteive the passed data value
     //to retreive the passed data use .QueryString["label"]
@@ -44,13 +41,15 @@
     string sqlcommand3 = "SELECT AlbumId, Title, ReleaseYear, ReleaseLabel FROM Albums WHERE ArtistId = @0 ORDER BY Title";
     var partialstring = cid;
     var results = db.Query(sqlcommand3, partialstring);
+    //string sqlartistname = "SELECT Name FROM Artists WHERE ArtistId = @0";
+    //var results2 = db.Query(sqlartistname, partialstring);
     if (results.Count() == 0)
     {
         <p style="color:firebrick">There was no record returned from the Data Base</p>
     }
     else
     {
-        <p>Albums of @artistname</p>
+        //<p>Albums of @results2</p>
         <p>There was @results.Count() record/s returned from the Data Base</p>
     }
 }
