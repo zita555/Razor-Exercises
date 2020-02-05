@@ -41,8 +41,17 @@
     string sqlcommand3 = "SELECT AlbumId, Title, ReleaseYear, ReleaseLabel FROM Albums WHERE ArtistId = @0 ORDER BY Title";
     var partialstring = cid;
     var results = db.Query(sqlcommand3, partialstring);
-    //string sqlartistname = "SELECT Name FROM Artists WHERE ArtistId = @0";
-    //var results2 = db.Query(sqlartistname, partialstring);
+
+
+    //setup display to use the class WebGrids
+    //assign the display data to the instance when it is created
+    //to alter the number of rows display by the WebGrid instance,
+    //   you need to specify the value when you first create the instance
+    //   syntax attribute --> rowsPerPage:value
+    var gridinstance = new WebGrid(results, rowsPerPage: 5);
+
+    string sqlartistname = "SELECT Name FROM Artists WHERE ArtistId = @0";
+    var results2 = db.QueryValue(sqlartistname, partialstring);
     if (results.Count() == 0)
     {
         <p style="color:firebrick">There was no record returned from the Data Base</p>
@@ -58,24 +67,19 @@
     <h1>@Page.Title</h1>
 }
 
-<table>
-    <thead>
-        <tr>
-            <th>AlbumID</th>
-            <th>Title</th>
-            <th>ReleaseYear</th>
-            <th>ReleaseLabel</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var row in results)
-        {
-            <tr>
-                <td>@row.AlbumID</td>
-                <td>@row.Title</td>
-                <td>@row.ReleaseYear</td>
-                <td>@row.ReleaseLabel</td>
-            </tr>
-        }
-    </tbody>
-</table>
+
+<div class="offset-1">
+    <h3>Albums Of @results2</h3>
+    <div class="col-11">
+        @gridinstance.GetHtml(
+            tableStyle: "table table-striped table-bordered table-hover",
+            mode: WebGridPagerModes.All,
+            firstText: "Start",
+            lastText: "Ends",
+            columns: gridinstance.Columns(
+               gridinstance.Column(columnName: "AlbumID", header: "ID"),
+               gridinstance.Column(columnName: "Title", header: "Title"),
+               gridinstance.Column(columnName: "ReleaseYear", header: "ReleaseYear"),              
+               gridinstance.Column(columnName: "ReleaseLabel", header: "ReleaseLabel")))
+    </div>
+</div>
