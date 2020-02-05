@@ -1,8 +1,82 @@
 ﻿@{
     Layout = "~/_Layout.cshtml";
-    Page.Title = string.Format("Razor - {0}", "Exercise 02_C");
+    Page.Title = string.Format("Razor - {0}", "Exercise02_C");
+
+    //output variable
+    string artistid = "";
+    string artistname = "";
+
+    //reteive the passed data value
+    //to retreive the passed data use .QueryString["label"]
+    //data is returned as a string
+    var cid = Request.QueryString["cid"];
+
+    //good practice
+    //check that you actually retreived data
+    if (string.IsNullOrEmpty(cid))
+    {
+        Response.Redirect("Exercise02_A.cshtml");
+    }
+
+    //this page will access the database when the submit button is pressed
+    //the project needs access to 2 more NuGet packages
+    //Microsoft.Aspnet.WebPages.Data
+    //Microsoft.Aspnet.Webpages.WebData
+
+    //connect to the database
+    //use the name attribute off your web connection string
+
+    var db = Database.Open("CHINOOK");
+
+    //create the sql command to be executed on the database
+    //input parameters will be represented by the use of placeholders
+    //placeholders are indexes (0, 1, 2,...)
+    //your command can use multiple placeholders
+
+    //how to use the LIKE command in SQL
+    //WHERE Name LIKE 'a%'	Finds any values that start with "a"
+    //WHERE Name LIKE '%a'	Finds any values that end with "a"
+    //WHERE Name LIKE '%or%'	Finds any values that have "or" in any position
+    //WHERE Name LIKE '_r%'	Finds any values that have "r" in the second position
+    //WHERE Name LIKE 'a__%'	Finds any values that start with "a" and are at least 3 characters in length
+    //WHERE Name LIKE 'a%o'	Finds any values that start with "a" and ends with "o"
+
+    string sqlcommand3 = "SELECT AlbumId, Title, ReleaseYear, ReleaseLabel FROM Albums WHERE ArtistId = @0 ORDER BY Title";
+    var partialstring = cid;
+    var results = db.Query(sqlcommand3, partialstring);
+    if (results.Count() == 0)
+    {
+        <p style="color:firebrick">There was no record returned from the Data Base</p>
+    }
+    else
+    {
+        <p>Albums of @artistname</p>
+        <p>There was @results.Count() record/s returned from the Data Base</p>
+    }
 }
 
 @section banner {
     <h1>@Page.Title</h1>
 }
+
+<table>
+    <thead>
+        <tr>
+            <th>AlbumID</th>
+            <th>Title</th>
+            <th>ReleaseYear</th>
+            <th>ReleaseLabel</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var row in results)
+        {
+            <tr>
+                <td>@row.AlbumID</td>
+                <td>@row.Title</td>
+                <td>@row.ReleaseYear</td>
+                <td>@row.ReleaseLabel</td>
+            </tr>
+        }
+    </tbody>
+</table>

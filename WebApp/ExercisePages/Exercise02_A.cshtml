@@ -1,8 +1,109 @@
 ﻿@{
     Layout = "~/_Layout.cshtml";
-    Page.Title = string.Format("Razor - {0}", "Exercise 02_A");
+    Page.Title = string.Format("Razor - {0}", "Exercise02_A");
+
+    //output variables
+    string artistid = "";
+    string artistname = "";
+
+    //input variables for web controls
+    var artistarg = Request.Form["artistArg"];
+    var thebutton = Request.Form["theButton"];
+
+    //remember the 1st time the page is called
+    //input variables will be null
+
+    //this page will access the database when the submit button is pressed
+    //the project needs access to 2 more NuGet packages
+    //Microsoft.Aspnet.WebPages.Data
+    //Microsoft.Aspnet.Webpages.WebData
 }
 
 @section banner {
     <h1>@Page.Title</h1>
 }
+
+@if (IsPost)
+{
+    <p>IsPost = true</p>
+
+    if (thebutton.Equals("reset"))
+    {
+        <p style="color:blue">The Reset Button was just Pressed</p>
+        artistarg = "";
+        artistid = "";
+    }
+    else  //user must have pressed the submit
+    {
+        //connect to the database
+        //use the name attribute off your web connection string
+        if (string.IsNullOrEmpty(artistarg))
+        {
+            <p style="color:red">Please enter your name.</p>
+        }
+        else
+        {
+            var db = Database.Open("CHINOOK");
+
+            //create the sql command to be executed on the database
+            //input parameters will be represented by the use of placeholders
+            //placeholders are indexes (0, 1, 2,...)
+            //your command can use multiple placeholders
+
+            //how to use the LIKE command in SQL
+            //WHERE Name LIKE 'a%'	Finds any values that start with "a"
+            //WHERE Name LIKE '%a'	Finds any values that end with "a"
+            //WHERE Name LIKE '%or%'	Finds any values that have "or" in any position
+            //WHERE Name LIKE '_r%'	Finds any values that have "r" in the second position
+            //WHERE Name LIKE 'a__%'	Finds any values that start with "a" and are at least 3 characters in length
+            //WHERE Name LIKE 'a%o'	Finds any values that start with "a" and ends with "o"
+
+            string sqlcommand1 = "SELECT ArtistId, Name FROM Artists WHERE Name LIKE @0";
+            var partialstring = "%" + artistarg + "%";
+            var results = db.Query(sqlcommand1, partialstring);
+            //always check if you even have results
+
+            if (results.Count() == 0)
+            {
+                <p style="color:firebrick">There was no record returned from the Data Base</p>
+                artistarg = "";
+                artistid = "";
+            }
+            else
+            {
+                //yes products:
+                //pass ddl value (CategoryID) to next page
+                // to go to another page use Response.Redirect(pagename) (GET method)
+                // to pass data along with the page
+                // add a ? after the name
+                // add for each parameter a coded pair of    label = value
+                // separate data pairs with an  &
+                // sample syntax    Response.Redirect(page.ext?lbl=value[&lbl=value ...])
+                //WARNING: value are passed in plain text on Url
+                Response.Redirect("Exercise02_B.cshtml?cid=" + artistarg);
+            }
+        }
+    }
+}
+else
+{
+    <p>IsPost = false</p>
+    <p style="color:darkblue">The Data Base has NOT been queried</p>
+    artistarg = "";
+}
+
+<form id="theform" method="post">
+    <label id="lblartistArg" for="artistArg">Enter a partial artist name:</label>&nbsp;&nbsp;<br />
+    <input type="text" id="artistArg" name="artistArg"
+           value="@artistarg" placeholder="partial artist name" />
+    <br /><br />
+    <button type="submit" id="theButton" name="theButton"
+            value="submit" class="btn btn-primary">
+        Fetch
+    </button>&nbsp;&nbsp;
+    <button type="submit" id="theButton" name="theButton"
+            value="reset" class="btn btn-light">
+        Reset
+    </button>
+</form>
+

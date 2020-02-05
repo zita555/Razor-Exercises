@@ -1,8 +1,112 @@
 ﻿@{
     Layout = "~/_Layout.cshtml";
-    Page.Title = string.Format("Razor - {0}", "Exercise 02_B");
+    Page.Title = string.Format("Razor - {0}", "Exercise02_B");
+
+    //output variable
+    string artistid = "";
+    string artistname = "";
+
+    //reteive the passed data value
+    //to retreive the passed data use .QueryString["label"]
+    //data is returned as a string
+    var cid = Request.QueryString["cid"];
+
+    //good practice
+    //check that you actually retreived data
+    if (string.IsNullOrEmpty(cid))
+    {
+        Response.Redirect("Exercise02_A.cshtml");
+    }
+
+    //this page will access the database when the submit button is pressed
+    //the project needs access to 2 more NuGet packages
+    //Microsoft.Aspnet.WebPages.Data
+    //Microsoft.Aspnet.Webpages.WebData
+
+    //connect to the database
+    //use the name attribute off your web connection string
+
+    var db = Database.Open("CHINOOK");
+
+    //create the sql command to be executed on the database
+    //input parameters will be represented by the use of placeholders
+    //placeholders are indexes (0, 1, 2,...)
+    //your command can use multiple placeholders
+
+    //how to use the LIKE command in SQL
+    //WHERE Name LIKE 'a%'	Finds any values that start with "a"
+    //WHERE Name LIKE '%a'	Finds any values that end with "a"
+    //WHERE Name LIKE '%or%'	Finds any values that have "or" in any position
+    //WHERE Name LIKE '_r%'	Finds any values that have "r" in the second position
+    //WHERE Name LIKE 'a__%'	Finds any values that start with "a" and are at least 3 characters in length
+    //WHERE Name LIKE 'a%o'	Finds any values that start with "a" and ends with "o"
+
+    string sqlcommand2 = "SELECT ArtistId, Name FROM Artists WHERE Name LIKE @0 ORDER BY Name";
+    var partialstring = "%" + cid + "%";
+    var results = db.Query(sqlcommand2, partialstring);
+    if (results.Count() == 0)
+    {
+        <p style="color:firebrick">There was no record returned from the Data Base</p>
+    }
+    else
+    {
+        <p style="color:darkgreen">There was @results.Count() record/s returned from the Data Base</p>
+    }
 }
 
 @section banner {
     <h1>@Page.Title</h1>
 }
+
+
+@if (IsPost)
+{
+    //obtain my data from the form
+    var choice = Request.Form["artistid"];
+
+    //check for a selection
+    if (choice.Equals("0"))
+    {
+        <p style="color:red">Please select a Artist Name to view:</p>
+    }
+    else
+    {
+        var albumquery = "SELECT AlbumId, Title, ReleaseYear, ReleaseLabel FROM Albums WHERE ArtistId = @0 ORDER BY Title";
+        var albuminfo = db.Query(albumquery, choice);
+        if (albuminfo.Count() == 0)
+        {
+            <p style="color:blue">There are no products for the selected artist.</p>
+        }
+        else
+        {
+            Response.Redirect("Exercise02_C.cshtml?cid=" + choice);
+        }
+    }
+
+}
+else
+{
+    <p>IsPost = False</p>
+}
+
+<form id="theform" method="post">
+    <label id="artistid">Select from the list:</label>&nbsp;&nbsp;
+    <select id="artistid" name="artistid">
+        <option value="">select ...</option>
+        @foreach (var item in results)
+        {
+            //walk through the record collection of Category records
+            //for each record in the collection you will create an option line
+            //the display text will be the CategoryName
+            //the value attribute will use the CategoryID (FKey on Products)
+            //reminder of data access on a record
+            // a) index   syntax item[index]
+            // b) property name  syntax item.PropertyName (column title on the SQL select)
+            <option value="@item.ArtistId">@item.Name</option>
+        }
+    </select>&nbsp;&nbsp;
+    <button type="submit" id="theButton" name="theButton" value="submit"
+            class="btn btn-primary">
+        Fetch Album
+    </button>
+</form>
