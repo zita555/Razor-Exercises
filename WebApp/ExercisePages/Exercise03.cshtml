@@ -1,8 +1,42 @@
 ﻿@{
     Layout = "~/_Layout.cshtml";
     Page.Title = string.Format("Razor - {0}", "Exercise 03");
+
+    var albumtitle = "";
+    var artistid = 0;
+    var releaseyear = 0;
+    var releaselabel = "";
+
+    var db = Database.Open("CHINOOK");
+    var artistquery = @"SELECT ArtistId, Name FROM Artists ORDER BY Name";
+    var artistlist = db.Query(artistquery);
+
+
+
 }
 
 @section banner {
     <h1>@Page.Title</h1>
 }
+
+<form id="theform" method="post">
+    <div>
+        <label for="albumtitle">Title:</label>
+        <input type="text" id="albumtitle" name="albumtitle" value="@albumname" />
+
+        <label for="artistid">ArtistId:</label>
+        <select id="artistid" name="artistid">
+            <option value="0">select...</option>
+            @foreach (var item in artistlist)
+            {
+
+            }
+        </select>
+
+        <label for="releaseyear">ReleaseYear:</label>
+        <input type="number" id="releaseyear" name="releaseyear" value="@releaseyear" />
+
+        <label for="releaselabel">ReleaseLabel:</label>
+        <input type="text" id="releaselabel" name="releaselabel" value="@releaselabel" />
+    </div>
+</form>
