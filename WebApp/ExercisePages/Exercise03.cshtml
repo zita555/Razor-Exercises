@@ -1,11 +1,11 @@
 ﻿@{
     Layout = "~/_Layout.cshtml";
-    Page.Title = string.Format("Razor - {0}", "Exercise 03");
+    Page.Title = string.Format("Exercise 3 - {0}", "Database Data Entry");
 
     // global variables
     var title = "";
     var artistid = "0";
-    var releaseyear = "0";
+    var releaseyear = "";
     var releaselabel = "";
 
     var db = Database.Open("CHINOOK");
@@ -18,8 +18,7 @@
         Validator.StringLength(160, 1, "Title name is limited to 160 charactors"));
 
     Validation.Add("ArtistList",
-        Validator.Range(1, 275, "ArtistId name is required"));
-        //Validator.Integer("ArtistId must be a interger"));
+        Validator.Range(1, 275, "ArtistId name is required"));  //Validator.Integer("ArtistId must be a interger"));
 
     Validation.Add("ReleaseYear",
         Validator.Required("ReleaseYear name is required"),
@@ -50,7 +49,7 @@
     {
         title = "";
         artistid = "0";
-        releaseyear = "0";
+        releaseyear = "";
         releaselabel = "";
     }
     else //pressed the ADD button
@@ -64,21 +63,21 @@
                 db.Execute(inscommand,
                     string.IsNullOrEmpty(title) ? null : title,
                     artistid.Equals("0") ? null : artistid,
-                    string.IsNullOrEmpty(releaselabel) ? null : releaselabel,
-                    releaseyear.Equals("0") ? null : releaseyear);
+                    releaseyear.Equals("0") ? null : releaseyear,
+                    string.IsNullOrEmpty(releaselabel) ? null : releaselabel);
 
 
-                    <p style="color:green">
-                        Product has been ADDED
-                    </p>
-              
+                <p style="color:green">
+                    Product has been ADDED
+                </p>
+
             }
             catch (Exception ex)
-            {               
+            {
                 <p style="color:firebrick; font-size:large">
                     Processing error: @ex.Message
                 </p>
-              
+
             }
         }
     }
@@ -88,42 +87,51 @@ else
 
 }
 
-@Html.ValidationSummary()
-
-<form id="theform" method="post">
-    <div>
-        <h3>Enter Album</h3>
+<div class="offset-5">
+    <div class="col-md-12 text-left">
+        @Html.ValidationSummary()
     </div>
-    <div>
-        <label for="Title">Title:</label>
-        <input type="text" id="Title" name="Title" value="@title" /><br />
+</div>
 
-        <label for="ArtistList">ArtistId:</label>
-        <select id="ArtistList" name="ArtistList">
-            <option value="0">select...</option>
-            @foreach (var item in artistlist)
-            {
-                if (item.ArtistID.ToString() == artistid)
-                {
-                    <option value="@item[0]" selected">@item[1]</option>
-                }
-                else
-                {
-                    <option value="@item[0]">@item[1]</option>
-                }
-            }
-        </select><br />
-
-        <label for="ReleaseYear">ReleaseYear:</label>
-        <input type="number" id="ReleaseYear" name="ReleaseYear" value="@releaseyear" /><br />
-
-        <label for="ReleaseLabel">ReleaseLabel:</label>
-        <input type="text" id="ReleaseLabel" name="ReleaseLabel" value="@releaselabel" />
-    </div>
-    <div>
-        <input type="submit" id="FormButton" name="FormButton"
-               class="btn btn-primary" value="Add" />
-        <input type="submit" id="FormButton" name="FormButton" formnovalidate
-               class="btn" value="Clear" />
-    </div>
-</form>
+    <form id="theform" method="post">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h3>Enter Album</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 text-right">
+                <label for="Title">Title:</label><br />
+                <label for="ArtistList">ArtistId:</label><br />
+                <label for="ReleaseYear">ReleaseYear:</label><br />
+                <label for="ReleaseLabel">ReleaseLabel:</label><br />
+            </div>
+            <div class="col-me-6 text-left">
+                <input type="text" id="Title" name="Title" value="@title" /><br />
+                <select id="ArtistList" name="ArtistList">
+                    <option value="0">select...</option>
+                    @foreach (var item in artistlist)
+                    {
+                        if (item.ArtistID.ToString() == artistid)
+                        {
+                            <option value="@item[0]" selected">@item[1]</option>       //required//selected
+                        }
+                        else
+                        {
+                            <option value="@item[0]">@item[1]</option>
+                        }
+                    }
+                </select><br />
+                <input type="number" id="ReleaseYear" name="ReleaseYear" value="@releaseyear" /><br />
+                <input type="text" id="ReleaseLabel" name="ReleaseLabel" value="@releaselabel" /><br />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <input type="submit" id="FormButton" name="FormButton"
+                       class="btn btn-primary" value="Add" />
+                <input type="submit" id="FormButton" name="FormButton" formnovalidate
+                       class="btn" value="Clear" />
+            </div>
+        </div>
+    </form>
