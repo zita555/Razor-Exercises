@@ -1,0 +1,49 @@
+﻿@{
+    Layout = "~/_Layout.cshtml";
+    Page.Title = string.Format("Razor - {0}", "Exercise04_B_Album Web Grid Display");
+
+    var aid = Request.QueryString["aid"];
+    //The HTTP query string is specified by the values following the question mark (?). 
+    
+    <div class="offset-1">
+        <h4>A search was done with the following partial string for album: <span style="color:orangered">@aid</span></h4>
+        <br />
+    </div>
+
+    if (string.IsNullOrEmpty(aid))
+    {
+        Response.Redirect("Exercise04_A_AlbumSearch.cshtml");
+    }
+
+    var db = Database.Open("CHINOOK");
+    var partialSearchString = "%" + aid + "%";
+    var queryStatement = "SELECT AlbumId, Title, ArtistId, ReleaseYear, ReleaseLabel "
+                         + "FROM Albums "
+                         + "WHERE Title like @0";
+    var queryAlbumInfo = db.Query(queryStatement, partialSearchString);
+
+    var grid = new WebGrid(queryAlbumInfo, rowsPerPage: 6);
+}
+
+@section banner {
+    <h1>@Page.Title</h1>
+}
+
+<div class="offset-1">
+    <div class="col-11">
+        @grid.GetHtml("table table-striped table-bordered table-hover",
+                 mode: WebGridPagerModes.All,
+                 lastText: "Last",
+                 firstText: "First",
+                 columns: grid.Columns(
+                     grid.Column(columnName: "AlbumId", header: "AlbumId"),
+                     grid.Column(columnName: "Title", header: "Title"),
+                     grid.Column(columnName: "ArtistId", header: "ArtistId"),
+                     grid.Column(columnName: "ReleaseYear", header: "ReleaseYear"),
+                     grid.Column(columnName: "ReleaseLabel", header: "ReleaseLabel"),
+                     grid.Column(header: "", format: @<text><a href="~/ExercisePages/Exercise04_C_AlbumEdit.cshtml?aid=@item.AlbumId">Edit</a></text>)
+                     //item?
+                                        )
+                     )
+    </div>
+</div>

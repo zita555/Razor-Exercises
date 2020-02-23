@@ -93,45 +93,45 @@ else
     </div>
 </div>
 
-    <form id="theform" method="post">
-        <div class="row">
-            <div class="col-md-12 text-center">
-                <h3>Enter Album</h3>
-            </div>
+<form id="theform" method="post">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h3>Enter the info. of the album you need to add.</h3>
         </div>
-        <div class="row">
-            <div class="col-md-6 text-right">
-                <label for="Title">Title:</label><br />
-                <label for="ArtistList">ArtistId:</label><br />
-                <label for="ReleaseYear">ReleaseYear:</label><br />
-                <label for="ReleaseLabel">ReleaseLabel:</label><br />
-            </div>
-            <div class="col-me-6 text-left">
-                <input type="text" id="Title" name="Title" value="@title" /><br />
-                <select id="ArtistList" name="ArtistList">
-                    <option value="0">select...</option>
-                    @foreach (var item in artistlist)
+    </div>
+    <div class="row">
+        <div class="col-md-6 text-right">
+            <label for="Title">Title:</label><br />
+            <label for="ArtistList">ArtistId:</label><br />
+            <label for="ReleaseYear">ReleaseYear:</label><br />
+            <label for="ReleaseLabel">ReleaseLabel:</label><br />
+        </div>
+        <div class="col-m-6 text-left">
+            <input type="text" id="Title" name="Title" value="@title" /><br />
+            <select id="ArtistList" name="ArtistList">
+                <option value="0">select...</option>
+                @foreach (var item in artistlist)
+                {
+                    if (item.ArtistID.ToString() == artistid)
                     {
-                        if (item.ArtistID.ToString() == artistid)
-                        {
-                            <option value="@item[0]" selected">@item[1]</option>       //required//selected
-                        }
-                        else
-                        {
-                            <option value="@item[0]">@item[1]</option>
-                        }
+                        <option value="@item[0]" selected">@item[1]</option>       //required//selected
                     }
-                </select><br />
-                <input type="number" id="ReleaseYear" name="ReleaseYear" value="@releaseyear" /><br />
-                <input type="text" id="ReleaseLabel" name="ReleaseLabel" value="@releaselabel" /><br />
-            </div>
+                    else
+                    {
+                        <option value="@item[0]">@item[1]</option>
+                    }
+                }
+            </select><br />
+            <input type="number" id="ReleaseYear" name="ReleaseYear" value="@releaseyear" /><br />
+            <input type="text" id="ReleaseLabel" name="ReleaseLabel" value="@releaselabel" /><br />
         </div>
-        <div class="row">
-            <div class="col-md-12 text-center">
-                <input type="submit" id="FormButton" name="FormButton"
-                       class="btn btn-primary" value="Add" />
-                <input type="submit" id="FormButton" name="FormButton" formnovalidate
-                       class="btn" value="Clear" />
-            </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <input type="submit" id="FormButton" name="FormButton"
+                    class="btn btn-primary" value="Add" />
+            <input type="submit" id="FormButton" name="FormButton" formnovalidate
+                    class="btn" value="Clear" />
         </div>
-    </form>
+    </div>
+</form>
