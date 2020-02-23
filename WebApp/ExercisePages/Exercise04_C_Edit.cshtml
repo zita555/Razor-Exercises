@@ -7,7 +7,7 @@
     var aid = Request.QueryString["aid"];
     if (aid.IsEmpty())
     {
-        Response.Redirect("Exercise04_A_AlbumSearch.cshtml");
+        Response.Redirect("Exercise04_A_Search.cshtml");
     }
 
     var albumId = Request.Form["AlbumId"]; //name
@@ -43,7 +43,6 @@
     var artistquery = "SELECT ArtistId, Name FROM Artists";
     var artistlist = db.Query(artistquery);
 
-
     if (queryAlbumInfo == null)
     {
         message = "Album NOT found";
@@ -62,7 +61,7 @@
 {
     if (theButton.Equals("backtosearch")) //value
     {
-        Response.Redirect("Exercise04_A_AlbumSearch.cshtml");
+        Response.Redirect("Exercise04_A_Search.cshtml");
     }
     else
     {

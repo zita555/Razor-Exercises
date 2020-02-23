@@ -12,7 +12,7 @@
 
     if (string.IsNullOrEmpty(aid))
     {
-        Response.Redirect("Exercise04_A_AlbumSearch.cshtml");
+        Response.Redirect("Exercise04_A_Search.cshtml");
     }
 
     var db = Database.Open("CHINOOK");
@@ -41,7 +41,7 @@
                      grid.Column(columnName: "ArtistId", header: "ArtistId"),
                      grid.Column(columnName: "ReleaseYear", header: "ReleaseYear"),
                      grid.Column(columnName: "ReleaseLabel", header: "ReleaseLabel"),
-                     grid.Column(header: "", format: @<text><a href="~/ExercisePages/Exercise04_C_AlbumEdit.cshtml?aid=@item.AlbumId">Edit</a></text>)
+                     grid.Column(header: "", format: @<text><a href="~/ExercisePages/Exercise04_C_Edit.cshtml?aid=@item.AlbumId">Edit</a></text>)
                      //item?
                                         )
                      )
