@@ -30,7 +30,6 @@
         Validator.Range(1950, DateTime.Today.Year, "ReleaseYear between 1950 and this year inclusive."));
 
     Validation.Add("ReleaseLabel",
-        Validator.Required("ReleaseLabel is required"),
         Validator.StringLength(50, 0, "ReleaseLabel is limited to 50 characters"));
 
 
@@ -67,7 +66,7 @@
     {
         if (theButton.Equals("clear")) //value
         {
-            albumId = "";
+            //albumId = "";
             title = "";
             artistId = "";
             releaseYear = "";
@@ -166,7 +165,7 @@ else //IsPost=false
             <label for="ReleaseLabel">ReleaseLabel:</label><br /><br />
         </div>
         <div class="col-7 text-left">
-            <input type="number" name="AlbumId" value="@albumId" /><br /><br />   @*value???*@
+            <input type="number" name="AlbumId" value="@albumId" readonly/><br /><br />   @*value???*@
             <input type="text" name="Title" value="@title" /><br /><br />
             <select name="ArtistList">
                 <option value="0">Select...</option>
@@ -210,7 +209,7 @@ else //IsPost=false
     <script type="text/javascript">
     document.getElementById("theDelete").onclick = ConfirmDelete;
     function ConfirmDelete() {
-        return confirm("Are you sure you want to DELETE the album <span style="color:orangered">@title</span>?");
+        return confirm("Are you sure you want to DELETE the album @title?");
     }
     </script>
 </form>
