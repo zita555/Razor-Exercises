@@ -8,9 +8,9 @@
     var partialSearchString = "%" + albumSearch + "%" ;
 
     var queryStatement = "SELECT AlbumId, Title, ArtistId, "
-              + "ReleaseYear, ReleaseLabel "
-              + "FROM Albums "
-              + "WHERE Title like @0 ";
+                          + "ReleaseYear, ReleaseLabel "
+                          + "FROM Albums "
+                          + "WHERE Title like @0 ";
     var queryAlbum = db.Query(queryStatement, partialSearchString);
 }
 

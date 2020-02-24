@@ -17,7 +17,7 @@
     var releaseLabel = Request.Form["ReleaseLabel"];
     var theButton = Request.Form["theButton"];
 
-    Validation.Add("Title",
+    Validation.Add("Title",  //*1
         Validator.Required("Title is required"),
         Validator.StringLength(160, 0, "Title is limited to 160 characters"));
 
@@ -72,7 +72,7 @@
             releaseYear = "";
             releaseLabel = "";
         }
-        else if (Validation.IsValid())
+        else if (Validation.IsValid())  //*2
         {
             try
             {
@@ -81,7 +81,7 @@
                     var sqlcommand = "UPDATE ALbums SET "
                                     + "Title = @0, ArtistId = @1, ReleaseYear = @2, ReleaseLabel = @3 "
                                     + "WHERE AlbumId = @4";
-                    var rowAffected = db.Execute(sqlcommand,
+                    var rowAffected = db.Execute(sqlcommand,        // non-query SQL statement
                                     string.IsNullOrEmpty(title) ? null : title,
                                     string.IsNullOrEmpty(artistId) ? null : artistId,
                                     releaseYear.Equals("0") ? null : releaseYear,
@@ -140,7 +140,7 @@ else //IsPost=false
 }
 
 <div class="offset-4">
-        @Html.ValidationSummary()
+        @Html.ValidationSummary()  *3
 </div>
 
 <div class="col-12 text-center">
