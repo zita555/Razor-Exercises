@@ -1,0 +1,36 @@
+﻿@{
+    Page.Title = "Manage Student";
+    Layout = "/_Layout.cshtml";
+
+    var db = Database.Open("CPSC1517DB");
+
+    var queryStatement = "SELECT StudentID, StudentName, Credits FROM Student";
+
+    var queryAlbumInfo = db.Query(queryStatement);
+
+    var grid = new WebGrid(queryAlbumInfo, rowsPerPage: 6);
+}
+
+
+@section head
+{
+    <link href="@Href("~/Content/WebGridStyleSheet.css")" rel="stylesheet" media="screen" />
+}
+
+
+
+<div class="offset-1">
+    <div class="col-12">
+        @grid.GetHtml("table table-striped table-bordered table-hover",
+                 mode: WebGridPagerModes.All,
+                 lastText: "Last",
+                 firstText: "First",
+                 columns: grid.Columns(
+                     grid.Column(columnName: "StudentID", header: "ID"),
+                     grid.Column(columnName: "StudentName", header: "Name"),
+                     grid.Column(columnName: "Credits", header: "Crd"),
+                     grid.Column(header: "", format: @<text><a href="~/EditStudent.cshtml?sid=@item.StudentID">Edit</a></text>)
+)
+)
+    </div>
+</div>

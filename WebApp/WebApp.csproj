@@ -133,6 +133,8 @@
     <Content Include="Scripts\esm\popper-utils.js.map" />
     <Content Include="ExercisePages\Exercise04_B_WebGridDisplay.cshtml" />
     <Content Include="ExercisePages\Exercise04_C_Edit.cshtml" />
+    <Content Include="In\EditStudent.cshtml" />
+    <Content Include="In\ManageStudent.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -261,7 +263,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>51994</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:51994/</IISUrl>
+          <IISUrl>http://localhost:51996/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

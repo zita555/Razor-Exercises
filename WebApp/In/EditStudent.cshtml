@@ -1,0 +1,167 @@
+﻿@{
+    Page.Title = "Edit Student";
+    Layout = "~/_Layout.cshtml";
+
+    var message = "";
+
+    var sid = Request.QueryString["sid"];
+    if (sid.IsEmpty())
+    {
+        Response.Redirect("ManageStudent.cshtml");
+    }
+
+    var studentID = Request.Form["StudentID"]; //name
+    var studentName = Request.Form["StudentName"];
+    var credits = Request.Form["Credits"];
+    var theButton = Request.Form["theButton"];
+
+    Validation.Add("StudentName",
+        Validator.Required("StudentName is required"),
+        Validator.StringLength(50, 1, "StudentName is limited to 50 characters"));
+
+    Validation.Add("Credits",
+        Validator.Required("Credits is required"),
+        Validator.Range(0, 100, "Credits between 0 and 100."));
+
+
+    var db = Database.Open("CPSC1517DB");
+    var queryStatement = "SELECT StudentID, StudentName, Credits FROM Student Where StudentID = @0";
+    var queryStudentInfo = db.QuerySingle(queryStatement, sid);
+
+
+    if (queryStudentInfo == null)
+    {
+        message = "Student NOT found";
+    }
+}
+
+
+@section head
+{
+    <link href="@Href("~/Content/WebGridStyleSheet.css")" rel="stylesheet" media="screen" />
+}
+
+
+@if (IsPost)
+{
+    if (theButton.Equals("backtosearch")) //value
+    {
+        Response.Redirect("ManageStudent.cshtml");
+    }
+    else
+    {
+        if (Validation.IsValid())  //*2
+        {
+            try
+            {
+                if (theButton.Equals("update"))
+                {
+                    var sqlcommand = "UPDATE Student SET "
+                                    + "StudentName = @0, Credits = @1 "
+                                    + "WHERE StudentID = @2";
+                    var rowAffected = db.Execute
+                                    (sqlcommand,
+                                    string.IsNullOrEmpty(studentName) ? null : studentName,
+                                    credits.Equals("0") ? null : credits,
+                                    studentID.Equals("0") ? null : studentID
+                                    );
+                    if (rowAffected > 0)
+                    {
+                        message = "Student has been UPDATED";
+                    }
+                    else
+                    {
+                        message = "Student NOT found";
+                    }
+                }
+                else if (theButton.Equals("delete"))
+                {
+                    var deleteStatement = "DELETE Student WHERE StudentID = @0";
+                    var rows = db.Execute(deleteStatement, studentID);
+                    if (rows == 1)
+                    {
+                        message = "Student has been DELETED";
+                    }
+                    else
+                    {
+                        message = "Student Not found";
+                    }
+
+                    studentID = "";
+                    studentName = "";
+                    credits = "";
+                }
+            }
+            catch (Exception ex)
+            {
+                <div class="col-12 text-center">
+                    <p style="color:firebrick; font-size:large">
+                        Processing error: @ex.Message
+                    </p>
+                </div>
+            }
+        }
+    }
+}
+else //IsPost=false
+{
+    if (message != "Student NOT found")
+    {
+        studentID = queryStudentInfo.StudentID == null ? "0" : queryStudentInfo.StudentID.ToString();
+        credits = queryStudentInfo.Credits == null ? "0" : queryStudentInfo.Credits.ToString();
+        studentName = queryStudentInfo.StudentName == null ? "0" : queryStudentInfo.StudentName.ToString();
+    }
+}
+
+<div class="offset-4">
+    @Html.ValidationSummary()
+</div>
+
+<div class="col-12 text-center">
+    <p style="color:green">
+        @message
+    </p>
+</div>
+
+<form id="theForm" action="" method="post">
+    <div class="row">
+        <div class="col-12 text-center">
+            <h3>Enter the info. of the Student you need to edit</h3>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-5 text-right">
+            <label for="StudentID">Student ID: </label><br /><br />
+            <label for="StudentName">Student Name: </label><br /><br />
+            <label for="Credits">Credits: </label><br /><br />
+        </div>
+        <div class="col-7 text-left">
+            <input type="number" name="StudentID" value="@studentID" readonly /><br /><br />
+            <input type="text" name="StudentName" value="@studentName" /><br /><br />
+            <input type="number" name="Credits" value="@credits" /><br /><br />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 text-center">
+            <button type="submit" name="theButton" id="theUpdate" class="bth btn-success"
+                    value="update">
+                Update
+            </button>&emsp;
+            <button type="submit" name="theButton" id="theDelete" class="bth btn-warning"
+                    value="delete">
+                Delete Record
+            </button>&emsp;
+            <button type="submit" name="theButton" id="theCancel" class="bth btn-secondary"
+                    value="backtosearch">
+                Back to Research
+            </button>&emsp;
+        </div>
+    </div>
+    <script type="text/javascript">
+    document.getElementById("theDelete").onclick = ConfirmDelete;
+    function ConfirmDelete() {
+        return confirm("Are you sure you want to DELETE the Student @studentName?");
+    }
+    </script>
+</form>
